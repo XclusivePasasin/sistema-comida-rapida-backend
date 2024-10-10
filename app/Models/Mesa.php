@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class Mesa extends Model
 {
     use HasFactory;
-    protected $table = 'MESA';
-    protected $fillable = ['NUMERO_MESA'];
 }

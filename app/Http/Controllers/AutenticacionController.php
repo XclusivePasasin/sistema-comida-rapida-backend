@@ -3,30 +3,39 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Asegúrate de importar Auth
 
 class AutenticacionController extends Controller
 {
-    public function iniciarSesion(Request $request)
+    public function login(Request $request)
     {
-        // Validar los campos de entrada
+        // Validar los datos de entrada
         $request->validate([
-            'usuario' => 'required|string',
-            'contraseña' => 'required|string',
+            'usuario' => 'required',
+            'contraseña' => 'required',
         ]);
 
-        // Intentar autenticar al usuario
-        if (Auth::attempt(['USUARIO' => $request->usuario, 'password' => $request->contraseña])) {
-            // Si la autenticación es exitosa
-            return response()->json(['mensaje' => 'Inicio de sesión exitoso'], 200);
+        // Ajustar las credenciales para que coincidan con tu base de datos
+        $credentials = [
+            'USUARIO' => $request->usuario,        // Coincidir con el nombre de columna "USUARIO"
+            'password' => $request->contraseña,    // Laravel espera "password", debemos manejar este campo
+        ];
+
+        // Intentar la autenticación
+        if (Auth::attempt($credentials)) {
+            // Si tiene éxito, regenerar la sesión
+            $request->session()->regenerate();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Login exitoso',
+            ], 200);
         }
 
-        // Si la autenticación falla
-        return response()->json(['error' => 'Credenciales incorrectas'], 401);
-    }
-
-    public function cerrarSesion(Request $request)
-    {
-        Auth::logout();
-        return response()->json(['mensaje' => 'Cierre de sesión exitoso'], 200);
+        // Si la autenticación falla, retornar error
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Credenciales incorrectas',
+        ], 401);
     }
 }
