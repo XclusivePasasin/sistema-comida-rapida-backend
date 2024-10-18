@@ -30,7 +30,7 @@ CREATE TABLE tables (
 );
 
 CREATE TABLE users (
-    id_user INT PRIMARY KEY AUTO_INCREMENT,
+    id_user INT PRIMARY KEY AUTO_INCREMENT, 
     password VARCHAR(255),
     role VARCHAR(1),
     username VARCHAR(15),
@@ -53,7 +53,7 @@ CREATE TABLE `orders` (
     FOREIGN KEY (id_table) REFERENCES tables(id_table)
 );
 
-CREATE TABLE order_detail (
+CREATE TABLE order_details (
     id_order_detail INT PRIMARY KEY AUTO_INCREMENT,
     id_dish INT,
     id_order INT,
@@ -71,4 +71,3 @@ VALUES (
     'Fast Food',  
     '77777777'   
 );
-
