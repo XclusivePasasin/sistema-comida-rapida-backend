@@ -1,8 +1,27 @@
-Data:
 DB NAME = fast_food
+DB USER = root
 
-// Command for creating model and controller
-php artisan make:model name-table -c 
+// command for create migration , model and controller
+php artisan make:model NombreDelModelo -mc
 
-// Command for users table
-php artisan make:model users -c
+// Commando for table users
+php artisan make:model User -mc
+
+// Commando for table categories
+php artisan make:model Category -mc
+
+// Commando for table dishes
+php artisan make:model Dish -mc
+
+// Commando for table curstomers
+php artisan make:model Customer -mc
+
+// Commando for table tables
+php artisan make:model Table -mc
+
+// Commando for table orders
+php artisan make:model Order -mc
+
+// Commando for table detail_orders
+php artisan make:model Detail_order -mc
+

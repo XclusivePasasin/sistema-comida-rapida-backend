@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
     // endpoint for get all users
     public function showUsers()
@@ -143,4 +143,3 @@ class UsersController extends Controller
 
     }
 }
-
