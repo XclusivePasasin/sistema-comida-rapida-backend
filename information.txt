@@ -1,0 +1,8 @@
+Data:
+DB NAME = fast_food
+
+// Command for creating model and controller
+php artisan make:model name-table -c 
+
+// Command for users table
+php artisan make:model users -c
