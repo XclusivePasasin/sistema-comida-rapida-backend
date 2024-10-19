@@ -8,7 +8,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+// endpoint for users
+Route::post('/users/login', [UserController::class ,'loginUser']);
 Route::get('/users/select', [UserController::class ,'showUsers']);
 Route::post('/users/create', [UserController::class ,'createUser']);
 Route::put('/users/update', [UserController::class ,'updateUser']);
