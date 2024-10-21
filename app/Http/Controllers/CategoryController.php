@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class CategoryController extends Controller
 {
@@ -55,7 +56,7 @@ class CategoryController extends Controller
     }
 
     // endpoint for update category
-    public function updateCategory(Request $request)
+    public function updateCategory(Request $request,$id)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -81,7 +82,7 @@ class CategoryController extends Controller
     }
 
     // endpoint for delete category
-    public function deleteCategory(Request $request)
+    public function deleteCategory(Request $request, $id)
     {
         try {
             $category = Category::find($request->id_category);

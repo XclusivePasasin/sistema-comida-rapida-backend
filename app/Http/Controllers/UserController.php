@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Exception;
 
 
 class UserController extends Controller
@@ -112,7 +113,7 @@ class UserController extends Controller
     }
 
     // endpoint for update user
-    public function updateUser(Request $request)
+    public function updateUser(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -142,7 +143,7 @@ class UserController extends Controller
     }
 
     // endpoint for delete user
-    public function deleteUser(Request $request)
+    public function deleteUser(Request $request,$id)
     {
         try {
             $user = User::find($request->id_user);

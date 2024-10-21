@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Table;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class TableController extends Controller
 {
@@ -55,7 +56,7 @@ class TableController extends Controller
     }
 
     // endpoint for update table
-    public function updateTable(Request $request)
+    public function updateTable(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -81,7 +82,7 @@ class TableController extends Controller
     }
 
     // endpoint for delete table
-    public function deleteTable(Request $request)
+    public function deleteTable(Request $request, $id)
     {
         try {
             $table = Table::find($request->id_table);
