@@ -43,7 +43,7 @@ class UserController extends Controller
     
             if ($validator->fails()) {
                 return response()->json(
-                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    ['code' => 400, 'message' => 'Empty or invalid fields', 'errors' => $validator->errors()],
                     400
                 );
             }
@@ -68,7 +68,7 @@ class UserController extends Controller
             );
         }
     }
-    
+
 
     // endpoint for create user
     public function createUser(Request $request)
