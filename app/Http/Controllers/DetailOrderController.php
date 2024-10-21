@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Detail_order;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class DetailOrderController extends Controller
 {
@@ -58,7 +59,7 @@ class DetailOrderController extends Controller
     }
 
     // endpoint for update detail_order
-    public function updateDetailOrder(Request $request)
+    public function updateDetailOrder(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -87,7 +88,7 @@ class DetailOrderController extends Controller
     }
 
     // endpoint for delete detail_order
-    public function deleteDetailOrder(Request $request)
+    public function deleteDetailOrder(Request $request, $id)
     {
         try {
             $detail_order = Detail_order::find($request->id_order_detail);

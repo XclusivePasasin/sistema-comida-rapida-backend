@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use app\Models\Order;
+use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -59,7 +62,7 @@ class OrderController extends Controller
     }
 
     // endpoint for update order status or payment_method
-   public function updateOrder(Request $request)
+   public function updateOrder(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -86,7 +89,7 @@ class OrderController extends Controller
     }
 
     // endpoint for delete order
-    public function deleteOrder(Request $request)
+    public function deleteOrder(Request $request, $id)
     {
         try {
             $order = Order::find($request->id_order);

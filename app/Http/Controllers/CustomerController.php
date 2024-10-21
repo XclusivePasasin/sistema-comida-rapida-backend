@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class CustomerController extends Controller
 {
@@ -59,7 +60,7 @@ class CustomerController extends Controller
     }
 
     //endpoint for update customer
-    public function updateCustomer(Request $request)
+    public function updateCustomer(Request $request, $dui)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -88,7 +89,7 @@ class CustomerController extends Controller
     }
 
     // endpoint for delete customer
-    public function deleteCustomer(Request $request)
+    public function deleteCustomer(Request $request,$dui)
     {
         try {
             $customer = Customer::find($request->dui);
