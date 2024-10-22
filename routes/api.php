@@ -24,10 +24,10 @@ Route::get('/users/search', [UserController::class ,'searchUser']);
 
 // Endpoints for costumer.
 Route::get('/customers', [CustomerController::class, 'showCustomers']);
+Route::get('/customers/search', [CustomerController::class, 'searchCustomer']);
 Route::post('/customers/create', [CustomerController::class, 'createCustomer']);
 Route::put('/customers/update', [CustomerController::class, 'updateCustomer']);
 Route::delete('/customers/delete', [CustomerController::class, 'deleteCustomer']);
-
 // Endpoints for Tables.
 Route::get('/tables', [TableController::class, 'showTables']);
 Route::post('/tables/create', [TableController::class, 'createTable']);
