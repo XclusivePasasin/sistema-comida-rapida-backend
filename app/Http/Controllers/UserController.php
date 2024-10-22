@@ -11,11 +11,11 @@ use Exception;
 
 class UserController extends Controller
 {
-    // endpoint for get all users
+    // endpoint para obtener los usuarios paginados
     public function showUsers()
     {
         try {
-            $users = User::all();
+            $users = User::paginate(10); // 10 usuarios por página
             if ($users->count() == 0) {
                 return response()->json(
                     ['code' => 404, 'message' => 'No users found'], 404
@@ -25,7 +25,7 @@ class UserController extends Controller
                     ['code' => 200, 'message' => 'Users found', 'users' => $users], 200
                 );
             }
-            }
+        }
         catch (Exception $e) {
             return response()->json(
                 ['code' => 500, 'message' => 'Internal server error'], 500
@@ -90,6 +90,7 @@ class UserController extends Controller
                     400
                 );
             }
+            
 
             // endpoint for create user
             $user = User::create([
@@ -113,37 +114,45 @@ class UserController extends Controller
     }
 
     // endpoint for update user
-    public function updateUser(Request $request, $id)
+    public function updateUser(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'id_user' => 'required|integer',
-                'username' => 'required|string|max:15|unique:users',
-                'password' => 'required|string|min:6|max:255',
+                'id_user' => 'required|integer|exists:users,id_user', 
+                'password' => 'nullable|string|min:6|max:255',  
                 'role' => 'required|string|max:1',
                 'employee_name' => 'required|string|max:70',
                 'phone' => 'required|string|max:8'
             ]);
+
             if ($validator->fails()) {
                 return response()->json(
                     ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()], 400
                 );
             }
+
             $user = User::find($request->id_user);
-            $user->update($request->all());
+
+            if ($request->filled('password')) {
+                $user->password = bcrypt($request->password);  // Hash the password
+            }
+
+            $user->role = $request->role;
+            $user->employee_name = $request->employee_name;
+            $user->phone = $request->phone;
+            $user->save();
             return response()->json(
-                ['code' => 200, 'message' => 'User updated', 'user' => $user], 200
+                ['code' => 200, 'message' => 'User updated successfully', 'user' => $user], 200
             );
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error', 'error' => $e->getMessage()], 500
             );
         }
     }
 
     // endpoint for delete user
-    public function deleteUser(Request $request,$id)
+    public function deleteUser(Request $request)
     {
         try {
             $user = User::find($request->id_user);
@@ -194,6 +203,5 @@ class UserController extends Controller
                 ['code' => 500, 'message' => 'Internal server error'], 500
             );
         }
-
     }
 }
