@@ -11,11 +11,11 @@ use Exception;
 
 class UserController extends Controller
 {
-    // endpoint for get all users
+    // endpoint for get users
     public function showUsers()
     {
         try {
-            $users = User::all();
+            $users = User::paginate(10); // 10 user for pagination
             if ($users->count() == 0) {
                 return response()->json(
                     ['code' => 404, 'message' => 'No users found'], 404
@@ -25,7 +25,7 @@ class UserController extends Controller
                     ['code' => 200, 'message' => 'Users found', 'users' => $users], 200
                 );
             }
-            }
+        }
         catch (Exception $e) {
             return response()->json(
                 ['code' => 500, 'message' => 'Internal server error'], 500
