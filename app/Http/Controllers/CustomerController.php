@@ -16,21 +16,23 @@ class CustomerController extends Controller
             $customers = Customer::all();
             if ($customers->count() == 0) {
                 return response()->json(
-                    ['code' => 404, 'message' => 'No customers found'], 404
-                );    
+                    ['code' => 404, 'message' => 'No customers found'],
+                    404
+                );
             } else {
                 return response()->json(
-                    ['code' => 200, 'message' => 'Customers found', 'customers' => $customers], 200
+                    ['code' => 200, 'message' => 'Customers found', 'customers' => $customers],
+                    200
                 );
             }
-            }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
     }
-    
+
     // endpoint for create customer
     public function createCustomer(Request $request)
     {
@@ -44,23 +46,25 @@ class CustomerController extends Controller
             ]);
             if ($validator->fails()) {
                 return response()->json(
-                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()], 400
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
                 );
             }
             $customer = Customer::create($request->all());
             return response()->json(
-                ['code' => 201, 'message' => 'Customer created', 'customer' => $customer], 201
+                ['code' => 201, 'message' => 'Customer created', 'customer' => $customer],
+                201
             );
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
     }
 
     //endpoint for update customer
-    public function updateCustomer(Request $request, $dui)
+    public function updateCustomer(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -72,36 +76,84 @@ class CustomerController extends Controller
             ]);
             if ($validator->fails()) {
                 return response()->json(
-                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()], 400
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
                 );
             }
             $customer = Customer::find($request->dui);
             $customer->update($request->all());
             return response()->json(
-                ['code' => 200, 'message' => 'Customer updated', 'customer' => $customer], 200
+                ['code' => 200, 'message' => 'Customer updated', 'customer' => $customer],
+                200
             );
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
     }
 
     // endpoint for delete customer
-    public function deleteCustomer(Request $request,$dui)
+    public function deleteCustomer(Request $request)
     {
         try {
             $customer = Customer::find($request->dui);
             $customer->delete();
             return response()->json(
-                ['code' => 200, 'message' => 'Customer deleted', 'customer' => $customer], 200
+                ['code' => 200, 'message' => 'Customer deleted', 'customer' => $customer],
+                200
             );
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
     }
+    //  endpoint search Costumers
+    public function searchCustomer(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'search' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
+                );
+            }
+
+
+            $searchTerm = $request->input('search');
+
+
+            $customers = Customer::where('dui', 'like', "%$searchTerm%")
+                ->orWhere('first_name', 'like', "%$searchTerm%")
+                ->orWhere('last_name', 'like', "%$searchTerm%")
+                ->orWhere('phone', 'like', "%$searchTerm%")
+                ->get();
+
+            if ($customers->count() == 0) {
+                return response()->json(
+                    ['code' => 404, 'message' => 'No customers found'],
+                    404
+                );
+            } else {
+                return response()->json(
+                    ['code' => 200, 'message' => 'Customers found', 'customers' => $customers],
+                    200
+                );
+            }
+        } catch (Exception $e) {
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
+            );
+        }
+    }
+
 }

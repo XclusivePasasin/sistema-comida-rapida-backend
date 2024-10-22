@@ -114,7 +114,7 @@ class UserController extends Controller
     }
 
     // endpoint for update user
-    public function updateUser(Request $request, $id)
+    public function updateUser(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -152,7 +152,7 @@ class UserController extends Controller
     }
 
     // endpoint for delete user
-    public function deleteUser(Request $request,$id)
+    public function deleteUser(Request $request)
     {
         try {
             $user = User::find($request->id_user);
