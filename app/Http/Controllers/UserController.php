@@ -11,11 +11,11 @@ use Exception;
 
 class UserController extends Controller
 {
-    // endpoint para obtener los usuarios paginados
+    // endpoint for get users
     public function showUsers()
     {
         try {
-            $users = User::paginate(10); // 10 usuarios por página
+            $users = User::paginate(10); // 10 user for pagination
             if ($users->count() == 0) {
                 return response()->json(
                     ['code' => 404, 'message' => 'No users found'], 404
