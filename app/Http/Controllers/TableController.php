@@ -13,20 +13,22 @@ class TableController extends Controller
     public function showTables()
     {
         try {
-            $tables = Table::all();
+            $tables = Table::paginate(10); // 10 user for pagination
             if ($tables->count() == 0) {
                 return response()->json(
-                    ['code' => 404, 'message' => 'No tables found'], 404
-                );    
+                    ['code' => 404, 'message' => 'No tables found'],
+                    404
+                );
             } else {
                 return response()->json(
-                    ['code' => 200, 'message' => 'Tables found', 'tables' => $tables], 200
+                    ['code' => 200, 'message' => 'Tables found', 'tables' => $tables],
+                    200
                 );
             }
-            }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
     }
@@ -36,27 +38,29 @@ class TableController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'table_number' => 'required|string|max:4'
+                'table_number' => 'required|string|max:4|unique:tables,table_number'
             ]);
             if ($validator->fails()) {
                 return response()->json(
-                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()], 400
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
                 );
             }
             $table = Table::create($request->all());
             return response()->json(
-                ['code' => 201, 'message' => 'Table created', 'table' => $table], 201
+                ['code' => 201, 'message' => 'Table created', 'table' => $table],
+                201
             );
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
     }
 
     // endpoint for update table
-    public function updateTable(Request $request, $id)
+    public function updateTable(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -65,36 +69,60 @@ class TableController extends Controller
             ]);
             if ($validator->fails()) {
                 return response()->json(
-                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()], 400
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
                 );
             }
             $table = Table::find($request->id_table);
             $table->update($request->all());
             return response()->json(
-                ['code' => 200, 'message' => 'Table updated', 'table' => $table], 200
+                ['code' => 200, 'message' => 'Table updated', 'table' => $table],
+                200
             );
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
     }
 
     // endpoint for delete table
-    public function deleteTable(Request $request, $id)
+    public function deleteTable(Request $request)
     {
         try {
             $table = Table::find($request->id_table);
             $table->delete();
             return response()->json(
-                ['code' => 200, 'message' => 'Table deleted', 'table' => $table], 200
+                ['code' => 200, 'message' => 'Table deleted', 'table' => $table],
+                200
             );
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'], 500
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
             );
         }
-    }  
+    }
+
+    // endpoint for checking if a table exists
+    public function checkTableExistence(Request $request)
+    {
+        $tableNumber = $request->query('number');
+
+        try {
+            // Verifica si la tabla existe en la base de datos
+            $exists = Table::where('table_number', $tableNumber)->exists();
+
+            return response()->json([
+                'exists' => $exists
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
+            );
+        }
+    }
+
 }
