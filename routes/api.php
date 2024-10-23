@@ -28,8 +28,10 @@ Route::get('/customers/search', [CustomerController::class, 'searchCustomer']);
 Route::post('/customers/create', [CustomerController::class, 'createCustomer']);
 Route::put('/customers/update', [CustomerController::class, 'updateCustomer']);
 Route::delete('/customers/delete', [CustomerController::class, 'deleteCustomer']);
+
 // Endpoints for Tables.
 Route::get('/tables', [TableController::class, 'showTables']);
+Route::get('/tables/check-existence', [TableController::class, 'checkTableExistence']);
 Route::post('/tables/create', [TableController::class, 'createTable']);
 Route::put('/tables/update', [TableController::class, 'updateTable']);
 Route::delete('/tables/delete', [TableController::class, 'deleteTable']);
@@ -43,9 +45,11 @@ Route::delete('/dishes/delete', [DishController::class, 'deleteDish']);
 
 //Endpoins for categories
 Route::get('/categories', [CategoryController::class, 'showCategories']); 
+Route::get('/categories/search', [CategoryController::class, 'searchCategories']);
 Route::post('/categories/create', [CategoryController::class, 'createCategory']); 
 Route::put('/categories/update', [CategoryController::class, 'updateCategory']); 
 Route::delete('/categories/delete', [CategoryController::class, 'deleteCategory']); 
+Route::get('categories/check-existence', [CategoryController::class, 'checkCategoryExists']);
 
 // Endpoints for orders.
 Route::get('/orders', [OrderController::class, 'showOrders']); 
