@@ -37,11 +37,11 @@ Route::put('/tables/update', [TableController::class, 'updateTable']);
 Route::delete('/tables/delete', [TableController::class, 'deleteTable']);
 
 // Endpoints for Dishes
-
 Route::get('/dishes', [DishController::class, 'showDishes']); 
 Route::post('/dishes/create', [DishController::class, 'createDish']); 
 Route::put('/dishes/update', [DishController::class, 'updateDish']);
 Route::delete('/dishes/delete', [DishController::class, 'deleteDish']); 
+Route::get('/dishes/search', [DishController::class, 'searchDish']); 
 
 //Endpoins for categories
 Route::get('/categories', [CategoryController::class, 'showCategories']); 

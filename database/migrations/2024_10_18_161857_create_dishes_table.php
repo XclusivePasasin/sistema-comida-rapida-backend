@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedInteger('id_category');
             $table->foreign('id_category')->references('id_category')->on('categories')->onDelete('cascade');
         });
+        
     }
 
     public function down(): void
