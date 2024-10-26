@@ -13,7 +13,7 @@ class TableController extends Controller
     public function showTables()
     {
         try {
-            $tables = Table::paginate(10); // 10 user for pagination
+            $tables = Table::paginate(10);
             if ($tables->count() == 0) {
                 return response()->json(
                     ['code' => 404, 'message' => 'No tables found'],
@@ -124,5 +124,50 @@ class TableController extends Controller
             );
         }
     }
+    // endpoint for searching tables
+    public function searchTable(Request $request)
+    {
+        try {
+            // Validación del término de búsqueda
+            $validator = Validator::make($request->all(), [
+                'table' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
+                );
+            }
+
+            
+            $searchTerm = $request->input('table');
+
+            
+            $tables = Table::where('table_number', 'like', "%$searchTerm%")
+                ->get();
+
+            
+            if ($tables->count() == 0) {
+                return response()->json(
+                    ['code' => 404, 'message' => 'No tables found'],
+                    404
+                );
+            }
+
+            
+            return response()->json(
+                ['code' => 200, 'message' => 'Tables found', 'tables' => $tables],
+                200
+            );
+        } catch (Exception $e) {
+            
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
+            );
+        }
+    }
+
 
 }

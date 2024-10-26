@@ -35,6 +35,8 @@ Route::get('/tables/check-existence', [TableController::class, 'checkTableExiste
 Route::post('/tables/create', [TableController::class, 'createTable']);
 Route::put('/tables/update', [TableController::class, 'updateTable']);
 Route::delete('/tables/delete', [TableController::class, 'deleteTable']);
+Route::get('/tables/search', [TableController::class, 'searchTable']);
+
 
 // Endpoints for Dishes
 Route::get('/dishes', [DishController::class, 'showDishes']); 
