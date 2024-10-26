@@ -122,7 +122,7 @@ class CategoryController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'search' => 'required|string'
+                'category' => 'required|string'
             ]);
 
             if ($validator->fails()) {
@@ -132,7 +132,7 @@ class CategoryController extends Controller
                 );
             }
 
-            $searchTerm = $request->input('search');
+            $searchTerm = $request->input('category');
 
             $categories = Category::where('name', 'like', "%$searchTerm%")
                 ->get();

@@ -13,7 +13,7 @@ class CustomerController extends Controller
     public function showCustomers()
     {
         try {
-            $customers = Customer::all();
+            $customers = Customer::paginate(10); 
             if ($customers->count() == 0) {
                 return response()->json(
                     ['code' => 404, 'message' => 'No customers found'],
@@ -117,7 +117,7 @@ class CustomerController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'search' => 'required|string'
+                'customers' => 'required|string'
             ]);
 
             if ($validator->fails()) {
@@ -128,7 +128,7 @@ class CustomerController extends Controller
             }
 
 
-            $searchTerm = $request->input('search');
+            $searchTerm = $request->input('customers');
 
 
             $customers = Customer::where('dui', 'like', "%$searchTerm%")
