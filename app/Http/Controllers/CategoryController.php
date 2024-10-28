@@ -155,33 +155,48 @@ class CategoryController extends Controller
             );
         }
     }
+
     // Endpoint to verify if exists
     public function checkCategoryExists(Request $request)
     {
         try {
-
+            // Validación
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:50'
+                'name' => 'required|string',
+                'category_id' => 'nullable|integer',
             ]);
-
+    
             if ($validator->fails()) {
                 return response()->json(
                     ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
                     400
                 );
             }
-
+    
             $name = $request->input('name');
-
-            $exists = Category::where('name', $name)->exists();
-
-            return response()->json(['exists' => $exists], 200);
-        } catch (Exception $e) {
+            $categoryId = $request->input('category_id');
+    
+            // Consulta de existencia
+            $query = Category::where('name', $name);
+            if ($categoryId) {
+                $query->where('id_category', '!=', $categoryId);
+            }
+    
+            $exists = $query->exists();
+    
+            return response()->json(
+                ['code' => 200, 'exists' => $exists],
+                200
+            );
+        } catch (\Exception $e) {
+            // Mensaje detallado para el log de errores
+            \Log::error("Error en checkCategoryExists: " . $e->getMessage());
             return response()->json(
                 ['code' => 500, 'message' => 'Internal server error'],
                 500
             );
         }
     }
+
 
 }

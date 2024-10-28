@@ -12,6 +12,6 @@ class Table extends Model
     protected $primaryKey = 'id_table';
     public $timestamps = false;
     protected $fillable = [
-        'table_number',
+        'table_number','status'
     ];
 }
