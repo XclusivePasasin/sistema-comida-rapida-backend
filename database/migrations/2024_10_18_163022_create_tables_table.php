@@ -11,7 +11,8 @@ return new class extends Migration
     {
         Schema::create('tables', function (Blueprint $table) {
             $table->increments('id_table');
-            $table->string('table_number', 4);
+            $table->string('table_number', 50);
+            $table->enum('status', ['A', 'I'])->default('A');
         });
     }
 

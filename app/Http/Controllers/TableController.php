@@ -38,7 +38,7 @@ class TableController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'table_number' => 'required|string|max:4|unique:tables,table_number'
+                'table_number' => 'required|string|max:50|unique:tables,table_number'
             ]);
             if ($validator->fails()) {
                 return response()->json(
@@ -65,16 +65,31 @@ class TableController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'id_table' => 'required|integer',
-                'table_number' => 'required|string|max:4'
+                'table_number' => 'required|string|max:50',
+                'status' => 'required|string|in:A,I', 
             ]);
+
             if ($validator->fails()) {
                 return response()->json(
                     ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
                     400
                 );
             }
+
             $table = Table::find($request->id_table);
-            $table->update($request->all());
+
+            if (!$table) {
+                return response()->json(
+                    ['code' => 404, 'message' => 'Table not found'],
+                    404
+                );
+            }
+
+            $table->update([
+                'table_number' => $request->table_number,
+                'status' => $request->status,
+            ]);
+
             return response()->json(
                 ['code' => 200, 'message' => 'Table updated', 'table' => $table],
                 200
@@ -109,10 +124,19 @@ class TableController extends Controller
     public function checkTableExistence(Request $request)
     {
         $tableNumber = $request->query('number');
+        $idTable = $request->query('id_table'); // Recibe el ID opcionalmente
 
         try {
-            // Verifica si la tabla existe en la base de datos
-            $exists = Table::where('table_number', $tableNumber)->exists();
+            // Construye la consulta para buscar mesas con el mismo nombre
+            $query = Table::where('table_number', $tableNumber);
+
+            // Excluye la mesa actual (si se envió el id_table) de la búsqueda
+            if ($idTable) {
+                $query->where('id_table', '!=', $idTable);
+            }
+
+            // Verifica si existe otra mesa con el mismo nombre
+            $exists = $query->exists();
 
             return response()->json([
                 'exists' => $exists
@@ -124,6 +148,7 @@ class TableController extends Controller
             );
         }
     }
+
     // endpoint for searching tables
     public function searchTable(Request $request)
     {
