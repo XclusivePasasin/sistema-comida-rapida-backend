@@ -187,5 +187,30 @@ class DishController extends Controller
             );
         }
     }
+
+    // Endpoint for getting dishes by category
+    public function getDishesByCategory($id_category)
+    {
+        try {
+            $dishes = Dish::where('id_category', $id_category)->get();
+            
+            if ($dishes->count() == 0) {
+                return response()->json(
+                    ['code' => 404, 'message' => 'No dishes found for this category'],
+                    404
+                );
+            } else {
+                return response()->json(
+                    ['code' => 200, 'message' => 'Dishes found', 'dishes' => $dishes],
+                    200
+                );
+            }
+        } catch (Exception $e) {
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error', 'error' => $e->getMessage()],
+                500
+            );
+        }
+    }
 }
 

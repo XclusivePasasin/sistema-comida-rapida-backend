@@ -194,5 +194,30 @@ class TableController extends Controller
         }
     }
 
+    public function showAvailableTables()
+    {
+        try {
+            $tables = Table::where('status', 'A')->paginate(10);
+            
+            if ($tables->count() == 0) {
+                return response()->json(
+                    ['code' => 404, 'message' => 'No available tables found'],
+                    404
+                );
+            } else {
+                return response()->json(
+                    ['code' => 200, 'message' => 'Available tables found', 'tables' => $tables],
+                    200
+                );
+            }
+        } catch (Exception $e) {
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
+            );
+        }
+    }
+
+
 
 }
