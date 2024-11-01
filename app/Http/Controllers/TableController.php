@@ -102,6 +102,47 @@ class TableController extends Controller
         }
     }
 
+    // Endpoint to update only the table status
+    public function updateTableStatus(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id_table' => 'required|integer',
+                'status' => 'required|string|in:A,I',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
+                );
+            }
+
+            $table = Table::find($request->id_table);
+
+            if (!$table) {
+                return response()->json(
+                    ['code' => 404, 'message' => 'Table not found'],
+                    404
+                );
+            }
+
+            $table->update([
+                'status' => $request->status,
+            ]);
+
+            return response()->json(
+                ['code' => 200, 'message' => 'Table status updated', 'table' => $table],
+                200
+            );
+        } catch (Exception $e) {
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error', 'error' => $e->getMessage()],
+                500
+            );
+        }
+    }
+
     // endpoint for delete table
     public function deleteTable(Request $request)
     {

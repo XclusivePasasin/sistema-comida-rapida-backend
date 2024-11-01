@@ -40,7 +40,7 @@ class OrderController extends Controller
                 'order_date' => 'required|date',
                 'customer_dui' => 'required|string|max:10',
                 'id_table' => 'required|integer',
-                'status' => 'required|string|max:1',
+                'status' => 'required|int|max:1',
                 'total' => 'required|numeric|min:0',
                 'payment_method' => 'required|string|max:40'
             ]);

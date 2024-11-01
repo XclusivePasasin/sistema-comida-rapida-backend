@@ -38,6 +38,7 @@ Route::put('/tables/update', [TableController::class, 'updateTable']);
 Route::delete('/tables/delete', [TableController::class, 'deleteTable']);
 Route::get('/tables/search', [TableController::class, 'searchTable']);
 Route::get('/tables/available-tables', [TableController::class, 'showAvailableTables']);
+Route::put('/tables/update-status', [TableController::class, 'updateTableStatus']);
 
 
 // Endpoints for Dishes
