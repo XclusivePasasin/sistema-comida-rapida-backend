@@ -102,7 +102,6 @@ class TableController extends Controller
         }
     }
 
-    // Endpoint to update only the table status
     public function updateTableStatus(Request $request)
     {
         try {
@@ -110,36 +109,46 @@ class TableController extends Controller
                 'id_table' => 'required|integer',
                 'status' => 'required|string|in:A,I',
             ]);
-
+    
             if ($validator->fails()) {
-                return response()->json(
-                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
-                    400
-                );
+                return response()->json([
+                    'code' => 400,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 400);
             }
-
+    
             $table = Table::find($request->id_table);
-
+    
             if (!$table) {
-                return response()->json(
-                    ['code' => 404, 'message' => 'Table not found'],
-                    404
-                );
+                return response()->json([
+                    'code' => 404,
+                    'message' => 'Table not found'
+                ], 404);
             }
-
-            $table->update([
-                'status' => $request->status,
-            ]);
-
-            return response()->json(
-                ['code' => 200, 'message' => 'Table status updated', 'table' => $table],
-                200
-            );
+    
+            $table->status = $request->status;
+            $table->save();
+    
+            return response()->json([
+                'code' => 200,
+                'message' => 'Table status updated',
+                'table' => $table,
+            ], 200);
+    
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Manejo de errores específicos de base de datos
+            return response()->json([
+                'code' => 500,
+                'message' => 'Database query error',
+                'error' => $e->getMessage(),
+            ], 500);
         } catch (Exception $e) {
-            return response()->json(
-                ['code' => 500, 'message' => 'Internal server error', 'error' => $e->getMessage()],
-                500
-            );
+            return response()->json([
+                'code' => 500,
+                'message' => 'Internal server error',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -165,18 +174,15 @@ class TableController extends Controller
     public function checkTableExistence(Request $request)
     {
         $tableNumber = $request->query('number');
-        $idTable = $request->query('id_table'); // Recibe el ID opcionalmente
+        $idTable = $request->query('id_table'); 
 
         try {
-            // Construye la consulta para buscar mesas con el mismo nombre
             $query = Table::where('table_number', $tableNumber);
 
-            // Excluye la mesa actual (si se envió el id_table) de la búsqueda
             if ($idTable) {
                 $query->where('id_table', '!=', $idTable);
             }
 
-            // Verifica si existe otra mesa con el mismo nombre
             $exists = $query->exists();
 
             return response()->json([
@@ -258,7 +264,5 @@ class TableController extends Controller
             );
         }
     }
-
-
 
 }
