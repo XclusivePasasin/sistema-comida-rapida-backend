@@ -25,6 +25,7 @@ Route::get('/users/search', [UserController::class ,'searchUser']);
 // Endpoints for costumer.
 Route::get('/customers', [CustomerController::class, 'showCustomers']);
 Route::get('/customers/search', [CustomerController::class, 'searchCustomer']);
+Route::post('/customers/search-dui', [CustomerController::class, 'verifyDUI']);
 Route::post('/customers/create', [CustomerController::class, 'createCustomer']);
 Route::put('/customers/update', [CustomerController::class, 'updateCustomer']);
 Route::delete('/customers/delete', [CustomerController::class, 'deleteCustomer']);
@@ -36,6 +37,8 @@ Route::post('/tables/create', [TableController::class, 'createTable']);
 Route::put('/tables/update', [TableController::class, 'updateTable']);
 Route::delete('/tables/delete', [TableController::class, 'deleteTable']);
 Route::get('/tables/search', [TableController::class, 'searchTable']);
+Route::get('/tables/available-tables', [TableController::class, 'showAvailableTables']);
+Route::put('/tables/update-status', [TableController::class, 'updateTableStatus']);
 
 
 // Endpoints for Dishes
@@ -44,6 +47,7 @@ Route::post('/dishes/create', [DishController::class, 'createDish']);
 Route::put('/dishes/update', [DishController::class, 'updateDish']);
 Route::delete('/dishes/delete', [DishController::class, 'deleteDish']); 
 Route::get('/dishes/search', [DishController::class, 'searchDish']); 
+Route::get('/dishes/category/{id_category}', [DishController::class, 'getDishesByCategory']);
 
 //Endpoins for categories
 Route::get('/categories', [CategoryController::class, 'showCategories']); 
@@ -58,6 +62,7 @@ Route::get('/orders', [OrderController::class, 'showOrders']);
 Route::post('/orders/create', [OrderController::class, 'createOrder']);
 Route::put('/orders/update', [OrderController::class, 'updateOrder']);
 Route::delete('/orders/delete', [OrderController::class, 'deleteOrder']); 
+Route::get('/orders/next-id', [OrderController::class, 'getNextOrderId']);
 
 
 

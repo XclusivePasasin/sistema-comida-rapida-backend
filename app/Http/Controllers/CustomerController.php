@@ -117,7 +117,7 @@ class CustomerController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'customers' => 'required|string'
+                'customers' => 'required|int'
             ]);
 
             if ($validator->fails()) {
@@ -131,7 +131,8 @@ class CustomerController extends Controller
             $searchTerm = $request->input('customers');
 
 
-            $customers = Customer::where('dui', 'like', "%$searchTerm%")
+             // Búsqueda exacta por DUI y parcial para otros campos
+            $customers = Customer::where('dui', $searchTerm)
                 ->orWhere('first_name', 'like', "%$searchTerm%")
                 ->orWhere('last_name', 'like', "%$searchTerm%")
                 ->orWhere('phone', 'like', "%$searchTerm%")
@@ -146,6 +147,44 @@ class CustomerController extends Controller
                 return response()->json(
                     ['code' => 200, 'message' => 'Customers found', 'customers' => $customers],
                     200
+                );
+            }
+        } catch (Exception $e) {
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error'],
+                500
+            );
+        }
+    }
+
+    // endpoint for verifying if a DUI exists
+    public function verifyDUI(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'dui' => 'required|string|size:9' 
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
+                    400
+                );
+            }
+
+            $dui = $request->input('dui');
+
+            $customer = Customer::where('dui', $dui)->first();
+
+            if ($customer) {
+                return response()->json(
+                    ['code' => 200, 'message' => 'DUI is valid and exists', 'customer' => $customer],
+                    200
+                );
+            } else {
+                return response()->json(
+                    ['code' => 404, 'message' => 'DUI not found'],
+                    404
                 );
             }
         } catch (Exception $e) {

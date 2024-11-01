@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use app\Models\Order;
+use App\Models\Order;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,7 +40,7 @@ class OrderController extends Controller
                 'order_date' => 'required|date',
                 'customer_dui' => 'required|string|max:10',
                 'id_table' => 'required|integer',
-                'status' => 'required|string|max:1',
+                'status' => 'required|int|max:1',
                 'total' => 'required|numeric|min:0',
                 'payment_method' => 'required|string|max:40'
             ]);
@@ -103,5 +103,14 @@ class OrderController extends Controller
                 ['code' => 500, 'message' => 'Internal server error'], 500
             );
         }
+    }
+
+    public function getNextOrderId()
+    {
+        $lastOrder = Order::orderBy('id_order', 'desc')->first();
+
+        $nextOrderId = $lastOrder ? $lastOrder->id_order + 1 : 1;
+
+        return response()->json(['next_order_id' => $nextOrderId], 200);
     }
 }
