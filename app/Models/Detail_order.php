@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+
 class Detail_order extends Model
 {
     protected $table = 'order_detail';
@@ -19,11 +20,11 @@ class Detail_order extends Model
 
     public function dish()
     {
-        return $this->belongsTo(Dish::class, 'id_dish', 'id_dish');
+        return $this->belongsTo(Dish::class, 'id_dish'); 
     }
 
     public function order()
     {
-        return $this->belongsTo(Order::class, 'id_order', 'id_order');
+        return $this->belongsTo(Order::class, 'id_order');
     }
 }

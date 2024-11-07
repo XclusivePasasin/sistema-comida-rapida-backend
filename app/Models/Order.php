@@ -35,4 +35,8 @@ class Order extends Model
     {
         return $this->belongsTo(Table::class, 'id_table', 'id_table');
     }
+    public function details()
+    {
+        return $this->hasMany(Detail_order::class, 'id_order');
+    }
 }

@@ -39,7 +39,7 @@ class UserController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'username' => 'required|string|max:15|exists:users,username', 
-                'password' => 'required|string|min:6|max:255',
+                'password' => 'required|string|min:2|max:255',
             ]);
     
             if ($validator->fails()) {
