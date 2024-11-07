@@ -71,11 +71,6 @@ Route::get('/report/daily-sales', [OrderController::class, 'generateDailySalesRe
 Route::get('/report/periodic-sales', [OrderController::class, 'generatePeriodicSalesReport']); 
 Route::post('/report/sales-by-category', [OrderController::class, 'generateSalesByCategoryReport']); 
 
-
-
-
-
-
 // Endpoints for detail orders
 Route::get('/detail-orders', [DetailOrderController::class, 'showDetailOrders']); 
 Route::post('/detail-orders/create', [DetailOrderController::class, 'createDetailOrder']); 
