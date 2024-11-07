@@ -20,4 +20,9 @@ class Dish extends Model
     {
         return $this->belongsTo(Category::class, 'id_category', 'id_category');
     }
+
+    public function details()
+    {
+        return $this->hasMany(Detail_order::class, 'id_dish', 'id_dish');
+    }
 }

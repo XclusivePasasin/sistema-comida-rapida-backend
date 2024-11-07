@@ -103,4 +103,28 @@ class DetailOrderController extends Controller
             );
         }
     }  
+    // endpoint for getting order details
+    public function getOrderDetails($id_order)
+    {
+        try {
+            $orderDetails = Detail_order::with('dish')
+                ->where('id_order', $id_order)
+                ->get();
+
+            if ($orderDetails->isEmpty()) {
+                return response()->json(
+                    ['code' => 404, 'message' => 'No details found for this order'], 404
+                );
+            } else {
+                return response()->json(
+                    ['code' => 200, 'message' => 'Order details found', 'order_details' => $orderDetails], 200
+                );
+            }
+        } catch (Exception $e) {
+            return response()->json(
+                ['code' => 500, 'message' => 'Internal server error'], 500
+            );
+        }
+    }
+
 }

@@ -60,9 +60,19 @@ Route::get('categories/check-existence', [CategoryController::class, 'checkCateg
 // Endpoints for orders.
 Route::get('/orders', [OrderController::class, 'showOrders']); 
 Route::post('/orders/create', [OrderController::class, 'createOrder']);
-Route::put('/orders/update', [OrderController::class, 'updateOrder']);
+Route::put('/orders/update/{id}', [OrderController::class, 'updateOrder']);
 Route::delete('/orders/delete', [OrderController::class, 'deleteOrder']); 
 Route::get('/orders/next-id', [OrderController::class, 'getNextOrderId']);
+Route::get('/orders/status/{status}', [OrderController::class, 'showOrdersByStatus']);
+Route::get('/orders/invoice/{order_id}', [OrderController::class, 'generateInvoice']);
+
+//endpoint for generate reports
+Route::get('/report/daily-sales', [OrderController::class, 'generateDailySalesReport']);
+Route::get('/report/periodic-sales', [OrderController::class, 'generatePeriodicSalesReport']); 
+Route::post('/report/sales-by-category', [OrderController::class, 'generateSalesByCategoryReport']); 
+
+
+
 
 
 
@@ -71,3 +81,4 @@ Route::get('/detail-orders', [DetailOrderController::class, 'showDetailOrders'])
 Route::post('/detail-orders/create', [DetailOrderController::class, 'createDetailOrder']); 
 Route::put('/detail-orders/update', [DetailOrderController::class, 'updateDetailOrder']);
 Route::delete('/detail-orders/delete', [DetailOrderController::class, 'deleteDetailOrder']); 
+Route::get('/orders/{id_order}/details', [DetailOrderController::class, 'getOrderDetails']);
