@@ -67,9 +67,11 @@ Route::get('/orders/status/{status}', [OrderController::class, 'showOrdersByStat
 Route::get('/orders/invoice/{order_id}', [OrderController::class, 'generateInvoice']);
 
 //endpoint for generate reports
-Route::get('/report/daily-sales', [OrderController::class, 'generateDailySalesReport']);
-Route::get('/report/periodic-sales', [OrderController::class, 'generatePeriodicSalesReport']); 
+Route::post('/report/daily-sales', [OrderController::class, 'generateDailySalesReport']);
+Route::post('/report/periodic-sales', [OrderController::class, 'generatePeriodicSalesReport']); 
 Route::post('/report/sales-by-category', [OrderController::class, 'generateSalesByCategoryReport']); 
+Route::get('/dashboard/metrics', [OrderController::class, 'getDashboardMetrics']);
+
 
 // Endpoints for detail orders
 Route::get('/detail-orders', [DetailOrderController::class, 'showDetailOrders']); 

@@ -1,68 +1,67 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factura de Pedido</title>
+    <title>Order Invoice</title>
     <style>
-        /* Reset de estilos básicos */
+        /* Basic style reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Estilos generales */
+        /* General styles */
         body, html {
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #ffffff;
-            /* background-color: #f3f4f6; */
             font-family: Arial, sans-serif;
             color: #1f2937;
         }
 
-        /* Contenedor principal */
+        /* Main container */
         .container {
             background-color: #ffffff;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 0.5rem;
-            max-width: 768px; /* Ancho ajustado */
+            max-width: 768px;
             width: 100%;
-            padding: 1.5rem; /* Espaciado ajustado */
+            padding: 1.5rem;
         }
 
-        /* Encabezado */
+        /* Header */
         .header, .totals, .client-info, .order-details {
-            margin-bottom: 1.5rem; /* Espacio entre secciones */
+            margin-bottom: 1.5rem;
         }
 
         .header-title {
-            font-size: 1.35rem; /* Tamaño moderado para el título */
+            font-size: 1.35rem;
             font-weight: bold;
             color: #1f2937;
         }
 
         .header-text, .client-info p, .order-details th, .order-details td, .totals span {
-            font-size: 0.875rem; /* Tamaño de texto estándar */
+            font-size: 0.875rem;
             color: #4b5563;
         }
 
         .header-subtitle {
             font-weight: bold;
             color: #2563eb;
-            font-size: 1rem; /* Tamaño moderado */
+            font-size: 1rem;
         }
 
-        /* Información del Cliente */
+        /* Client Information */
         .client-info {
             background-color: #f9fafb;
             border-radius: 0.5rem;
-            padding: 1.5rem; 
-            width: calc(100% + 2rem); /* Expandir ligeramente más para ocupar todo el ancho */
-            margin-left: -1.5rem; /* Ajusta según el padding del contenedor padre */
+            padding: 1.5rem;
+            width: calc(100% + 2rem);
+            margin-left: -1.5rem;
         }
 
         .client-info h2 {
@@ -72,14 +71,14 @@
             margin-bottom: 0.4rem;
         }
 
-        /* Tabla de detalles del pedido */
+        /* Order Details Table */
         .order-details table {
             width: 100%;
             border-collapse: collapse;
         }
 
         .order-details th, .order-details td {
-            padding: 0.65rem 0.75rem; /* Espaciado compacto */
+            padding: 0.65rem 0.75rem;
             text-align: left;
         }
 
@@ -100,10 +99,10 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        /* Totales */
+        /* Totals */
         .totals {
             border-top: 1px solid #e5e7eb;
-            padding-top: 1.2rem; /* Espacio ajustado */
+            padding-top: 1.2rem;
         }
 
         .totals .total-label {
@@ -112,36 +111,36 @@
 
         .totals .total-value {
             font-weight: bold;
-            font-size: 1.05rem; /* Tamaño destacado para el total */
+            font-size: 1.05rem;
             color: #1f2937;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Encabezado de la Empresa y Datos de la Factura -->
+        <!-- Company Header and Invoice Information -->
         <div class="header flex" style="display: flex; justify-content: space-between;">
             <div>
                 <h1 class="header-title">FastFood S.A de C.V.</h1>
                 <p class="header-text">CIF/NIT: 12345678A</p>
             </div>
             <div style="margin-right: 20px; text-align: right;">
-                <p class="header-title" style="color: #1f2937; font-weight: bold; font-size: 1rem;" >Número de factura:</p>
-                <p class="header-subtitle">Pedido #{{ $order->id_order }}</p>
-                <p class="header-text">Fecha Factura:</p>
+                <p class="header-title" style="color: #1f2937; font-weight: bold; font-size: 1rem;">Invoice Number:</p>
+                <p class="header-subtitle">Order #{{ $order->id_order }}</p>
+                <p class="header-text">Invoice Date:</p>
                 <p class="header-text">{{ $order->order_date }}</p>
             </div>
         </div>
 
-        <!-- Información del Cliente -->
+        <!-- Client Information -->
         <div class="client-info">
-            <h2>Cliente:</h2>
+            <h2>Client:</h2>
             <p>{{ $order->customer->first_name }} {{ $order->customer->last_name }}</p>
             <p>DUI: {{ $order->customer->dui }}</p>
-            <p>Dirección: {{ $order->customer->address ?? 'Dirección desconocida' }}</p>
+            <p>Address: {{ $order->customer->address ?? 'Unknown Address' }}</p>
         </div>
 
-        <!-- Detalles del Pedido -->
+        <!-- Order Details -->
         <div class="order-details">
             <table>
                 <thead>
@@ -165,18 +164,18 @@
             </table>
         </div>
 
-        <!-- Totales de la Factura -->
+        <!-- Invoice Totals -->
         <div class="totals">
             <div class="flex justify-between">
-                <span class="total-label">Total Base Imponible:</span>
+                <span class="total-label">Taxable Base Total:</span>
                 <span>{{ number_format($order->total - ($order->total * 0.21), 2) }} $</span>
             </div>
             <div class="flex justify-between">
-                <span class="total-label">I.V.A. 21%:</span>
+                <span class="total-label">VAT 21%:</span>
                 <span>{{ number_format($order->total * 0.21, 2) }} $</span>
             </div>
             <div class="flex justify-between">
-                <span class="total-label">Retención 15%:</span>
+                <span class="total-label">Retention 15%:</span>
                 <span>-{{ number_format($order->total * 0.15, 2) }} $</span>
             </div>
             <div class="flex justify-between">
