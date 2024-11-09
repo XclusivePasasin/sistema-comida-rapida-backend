@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Detail_order;
+use App\Models\Dish;
 use Exception;
 use PDF;
 use Illuminate\Support\Facades\File;
@@ -13,6 +15,58 @@ use Carbon\Carbon;
 
 class OrderController extends Controller
 {
+    // endpoint for get dashboard metrics
+    public function getDashboardMetrics()
+    {
+        try {
+            $today = Carbon::now()->startOfDay();
+            $startOfMonth = Carbon::now()->startOfMonth();
+    
+            $totalSalesToday = Order::where('status', 2)
+                                    ->whereDate('order_date', $today)
+                                    ->sum('total');
+    
+            $totalSalesMonth = Order::where('status', 2)
+                                    ->whereDate('order_date', '>=', $startOfMonth)
+                                    ->sum('total');
+    
+            $completedOrders = Order::where('status', 2)->count();
+            $pendingOrders = Order::where('status', 0)->count();
+    
+            $topDishes = Detail_order::select('id_dish', \DB::raw('SUM(quantity) as total_quantity'))
+                                    ->with('dish') 
+                                    ->groupBy('id_dish')
+                                    ->orderByDesc('total_quantity')
+                                    ->limit(5)
+                                    ->get();
+    
+            $topDishesData = $topDishes->map(function ($detail) {
+                return [
+                    'dish_name' => $detail->dish ? $detail->dish->dish_name : 'Platillo desconocido',
+                    'quantity_sold' => $detail->total_quantity,
+                ];
+            });
+    
+            return response()->json([
+                'code' => 200,
+                'message' => 'Dashboard metrics retrieved successfully',
+                'data' => [
+                    'total_sales_today' => $totalSalesToday,
+                    'total_sales_month' => $totalSalesMonth,
+                    'completed_orders' => $completedOrders,
+                    'pending_orders' => $pendingOrders,
+                    'top_selling_dishes' => $topDishesData,
+                ]
+            ], 200);
+        } catch (Exception $e) {
+            \Log::error("Error retrieving dashboard metrics: " . $e->getMessage());
+            return response()->json(
+                ['code' => 500, 'message' => 'Error retrieving dashboard metrics', 'error' => $e->getMessage()],
+                500
+            );
+        }
+    }
+
     // endpoint for get all orders
     public function showOrders()
     {
@@ -277,19 +331,25 @@ class OrderController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'period' => 'required|string|in:weekly,monthly'
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
             ]);
     
             if ($validator->fails()) {
                 return response()->json([
                     'code' => 400,
-                    'message' => 'Parámetro de período no válido',
+                    'message' => 'Parámetros de fecha no válidos',
                     'errors' => $validator->errors()
                 ], 400);
             }
     
-            $period = $request->period;
-            $fileName = "Periodic_Sales_Report_{$period}_" . now()->toDateString() . ".pdf";
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
+    
+            // Determina el período basado en las fechas proporcionadas
+            $period = $startDate->diffInDays($endDate) <= 7 ? 'semanal' : 'mensual';
+    
+            $fileName = "Periodic_Sales_Report_{$startDate->toDateString()}_to_{$endDate->toDateString()}.pdf";
             $filePath = public_path("reports/{$fileName}");
     
             if (!File::exists(public_path('reports'))) {
@@ -297,43 +357,36 @@ class OrderController extends Controller
             }
     
             if (file_exists($filePath)) {
-                return response()->json([
-                    'file_url' => asset("reports/{$fileName}"),
-                    'message' => "Reporte de ventas {$period} ya existente"
-                ]);
+                File::delete($filePath);
             }
     
-            $startDate = now();
-            if ($period === 'weekly') {
-                $startDate = $startDate->startOfWeek();
-            } elseif ($period === 'monthly') {
-                $startDate = $startDate->startOfMonth();
-            }
-    
-            $orders = Order::where('order_date', '>=', $startDate)->where('status', 2)->get();
+            $orders = Order::whereBetween('order_date', [$startDate, $endDate])->where('status', 2)->get();
             $totalSales = $orders->sum('total');
     
+            // Pasa todas las variables necesarias a la vista
             $pdf = PDF::loadView('reports.periodic_sales', [
                 'orders' => $orders,
                 'total_sales' => $totalSales,
-                'period' => $period,
-                'startDate' => $startDate
+                'period' => $period, // Variable agregada
+                'startDate' => $startDate,
+                'endDate' => $endDate
             ]);
     
             $pdf->save($filePath);
     
             return response()->json([
                 'file_url' => asset("reports/{$fileName}"),
-                'message' => "Reporte de ventas {$period} generado exitosamente"
+                'message' => "Reporte de ventas generado exitosamente"
             ]);
         } catch (Exception $e) {
             \Log::error("Error generating periodic sales report: " . $e->getMessage());
             return response()->json(
-                ['code' => 500, 'message' => 'Error al generar el reporte periódico', 'error' => $e->getMessage()],
+                ['code' => 500, 'message' => 'Error al generar el reporte', 'error' => $e->getMessage()],
                 500
             );
         }
     }
+    
 
     public function generateSalesByCategoryReport(Request $request)
     {
