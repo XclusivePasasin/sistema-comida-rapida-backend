@@ -363,11 +363,10 @@ class OrderController extends Controller
             $orders = Order::whereBetween('order_date', [$startDate, $endDate])->where('status', 2)->get();
             $totalSales = $orders->sum('total');
     
-            // Pasa todas las variables necesarias a la vista
             $pdf = PDF::loadView('reports.periodic_sales', [
                 'orders' => $orders,
                 'total_sales' => $totalSales,
-                'period' => $period, // Variable agregada
+                'period' => $period, 
                 'startDate' => $startDate,
                 'endDate' => $endDate
             ]);
@@ -376,12 +375,12 @@ class OrderController extends Controller
     
             return response()->json([
                 'file_url' => asset("reports/{$fileName}"),
-                'message' => "Reporte de ventas generado exitosamente"
+                'message' => "Sales report generated successfully"
             ]);
         } catch (Exception $e) {
             \Log::error("Error generating periodic sales report: " . $e->getMessage());
             return response()->json(
-                ['code' => 500, 'message' => 'Error al generar el reporte', 'error' => $e->getMessage()],
+                ['code' => 500, 'message' => 'Error generating the report', 'error' => $e->getMessage()],
                 500
             );
         }
