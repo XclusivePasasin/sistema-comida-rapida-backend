@@ -299,9 +299,10 @@ class OrderController extends Controller
                 File::delete($filePath);
             }
     
-            $orders = Order::whereDate('order_date', $reportDate)
-                           ->where('status', 2)
-                           ->get();
+            $orders = Order::with(['customer', 'user']) 
+                            ->whereDate('order_date', $reportDate)
+                            ->where('status', 2)
+                            ->get();
     
             $totalSales = $orders->sum('total');
     
@@ -346,7 +347,6 @@ class OrderController extends Controller
             $startDate = Carbon::parse($request->start_date);
             $endDate = Carbon::parse($request->end_date);
     
-            // Determina el período basado en las fechas proporcionadas
             $period = $startDate->diffInDays($endDate) <= 7 ? 'semanal' : 'mensual';
     
             $fileName = "Periodic_Sales_Report_{$startDate->toDateString()}_to_{$endDate->toDateString()}.pdf";
@@ -360,7 +360,10 @@ class OrderController extends Controller
                 File::delete($filePath);
             }
     
-            $orders = Order::whereBetween('order_date', [$startDate, $endDate])->where('status', 2)->get();
+            $orders = Order::with(['customer', 'user'])
+                            ->whereBetween('order_date', [$startDate, $endDate])
+                            ->where('status', 2)
+                            ->get();
             $totalSales = $orders->sum('total');
     
             $pdf = PDF::loadView('reports.periodic_sales', [

@@ -111,6 +111,8 @@
             <thead>
                 <tr>
                     <th>Order ID</th>
+                    <th class="text-center">Username</th>
+                    <th class="text-center">Customer Name</th>
                     <th class="text-center">Customer</th>
                     <th class="text-center">Total</th>
                 </tr>
@@ -119,6 +121,8 @@
                 @foreach ($orders as $order)
                 <tr>
                     <td>{{ $order->id_order }}</td>
+                    <td class="text-center">{{ $order->user->username  }}</td>
+                    <td class="text-center">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</td>
                     <td class="text-center">{{ $order->customer_dui }}</td>
                     <td class="text-center">{{ number_format($order->total, 2) }} $</td>
                 </tr>
