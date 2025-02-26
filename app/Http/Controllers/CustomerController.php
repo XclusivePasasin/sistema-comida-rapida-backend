@@ -112,50 +112,6 @@ class CustomerController extends Controller
         }
     }
     //  endpoint search Costumers
-    public function searchCustomer(Request $request)
-    {
-        try {
-
-            $validator = Validator::make($request->all(), [
-                'customers' => 'required|int'
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(
-                    ['code' => 400, 'message' => 'Validation failed', 'errors' => $validator->errors()],
-                    400
-                );
-            }
-
-
-            $searchTerm = $request->input('customers');
-
-
-             // Búsqueda exacta por DUI y parcial para otros campos
-            $customers = Customer::where('dui', $searchTerm)
-                ->orWhere('first_name', 'like', "%$searchTerm%")
-                ->orWhere('last_name', 'like', "%$searchTerm%")
-                ->orWhere('phone', 'like', "%$searchTerm%")
-                ->get();
-
-            if ($customers->count() == 0) {
-                return response()->json(
-                    ['code' => 404, 'message' => 'No customers found'],
-                    404
-                );
-            } else {
-                return response()->json(
-                    ['code' => 200, 'message' => 'Customers found', 'customers' => $customers],
-                    200
-                );
-            }
-        } catch (Exception $e) {
-            return response()->json(
-                ['code' => 500, 'message' => 'Internal server error'],
-                500
-            );
-        }
-    }
 
     // endpoint for verifying if a DUI exists
     public function verifyDUI(Request $request)
